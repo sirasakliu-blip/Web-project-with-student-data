@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>วิทยาการคำนวณ ว21032 | ทำความรู้จัก AR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<!-- model-viewer เวอร์ชันที่ใช้: 3.5.0 (ไลบรารีทางการจาก Google CDN) -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+:root{--navy:#1f3a68;--navy2:#33568f;--slate:#475569;--ink:#1e293b;--mut:#64748b;--bg:#fff;--soft:#f1f5f9;--soft2:#e6edf6;--line:#d5dde8;
+--ok:#3f7d5a;--okbg:#eaf3ee;--bad:#a4534b;--badbg:#f7ecea;--c1:#3b6ea5;--c2:#3f8f8a;--c3:#b08a3e;--c4:#7a62a8;--c5:#b9674f}
+*{box-sizing:border-box}
+html{font-size:17px;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Sarabun","Noto Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;min-width:320px}
+h2,h3,h4{line-height:1.35;color:var(--navy)}h4{margin:18px 0 6px;font-size:1.05rem}
+header{background:var(--navy);color:#fff;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header .t{flex:1;min-width:180px}header .t b{font-size:1.05rem;display:block;line-height:1.3}header .t span{font-size:.8rem;opacity:.85}
+header .u{font-size:.85rem;opacity:.95}
+nav{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:var(--soft);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{white-space:nowrap}
+button{font:inherit;min-height:44px;border:1.5px solid var(--line);background:#fff;color:var(--ink);padding:6px 16px;border-radius:12px;cursor:pointer}
+button:hover:not(:disabled){border-color:var(--navy)}button:disabled{opacity:.5;cursor:not-allowed}
+button.p,nav button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+header button{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+main{max-width:980px;margin:0 auto;padding:12px 14px 56px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.soft{background:var(--soft)}
+input,textarea,select{font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%;margin:4px 0;min-height:44px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.mut{color:var(--mut);font-size:.88rem}.ok{color:var(--ok)}.bad{color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}th{background:var(--navy);color:#fff;text-align:left;padding:8px;font-weight:600}
+td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}.scroll{overflow-x:auto}
+.av{width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--soft2);border:3px solid var(--soft2)}.av.s{width:36px;height:36px;border-width:1px}
+.tag{display:inline-block;background:var(--soft2);color:var(--navy);border-radius:8px;padding:0 8px;font-size:.8rem;font-weight:600}
+.ex{border-left:5px solid var(--c3);padding:6px 14px;margin:14px 0;background:#faf6ec;border-radius:0 12px 12px 0}
+.tnote{border:1px dashed var(--slate);padding:8px 14px;margin:12px 0;background:var(--soft);border-radius:10px;font-size:.9rem}
+pre{background:var(--soft);border:1px solid var(--line);padding:10px;overflow-x:auto;font-size:.8rem;border-radius:10px}
+figure{margin:14px 0;background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:10px}figure svg{width:100%;height:auto;max-width:460px;display:block;margin:0 auto}
+figcaption{font-size:.85rem;color:var(--slate);margin-top:6px}
+model-viewer{width:100%;height:340px;background:var(--soft);border-radius:14px;--poster-color:transparent}
+.arbtn{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-color:var(--navy)}
+/* หน้าเข้าสู่ระบบ + หน้าตั้งค่า */
+#login{max-width:430px;margin:22px auto;padding:0;overflow:hidden}#login .in{padding:18px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:20px;padding:22px 20px;position:relative;overflow:hidden;margin:6px 0 14px}
+.hero h2{color:#fff;margin:0 0 6px}.hero p{margin:4px 0;opacity:.95}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero::before{content:"";position:absolute;right:50px;bottom:-60px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .em{font-size:2.6rem;display:inline-block;position:relative;z-index:1}.float{animation:fl 3.2s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){.float{animation:none}*{scroll-behavior:auto!important}}
+.chip{display:inline-block;background:rgba(255,255,255,.16);border-radius:20px;padding:1px 12px;font-size:.82rem;margin:2px 4px 2px 0;position:relative;z-index:1}
+.bar{height:14px;background:var(--soft2);border-radius:8px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:var(--ok);border-radius:8px;transition:width .4s}
+.path{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin:10px 0}
+.stop{border:2px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;font-size:.85rem;background:#fff;line-height:1.35}
+.stop .ic{font-size:1.7rem;display:block}.stop.done{border-color:var(--ok);background:var(--okbg)}.stop.cur{border-color:var(--navy);background:var(--soft2);box-shadow:0 0 0 3px rgba(31,58,104,.15)}.stop.lock{opacity:.6}
+.unit{border:1px solid var(--line);border-left:7px solid var(--uc,var(--navy));border-radius:16px;padding:14px;margin:14px 0;background:#fff}
+.unit .no{width:38px;height:38px;border-radius:50%;background:var(--uc,var(--navy));color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.unit.locked{background:var(--soft);opacity:.85}
+.qopt{display:flex;gap:10px;align-items:center;padding:11px 12px;border:2px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer;background:#fff}
+.qopt.sel{border-color:var(--navy);background:var(--soft2)}.qopt input{width:auto;min-height:0;margin:0}.qopt .lt{background:var(--soft2);border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;flex:none;font-weight:600;font-size:.85rem}
+.qopt.right{border-color:var(--ok);background:var(--okbg)}.qopt.wrong{border-color:var(--bad);background:var(--badbg)}
+.fb{margin:6px 0;padding:8px 12px;border-radius:10px;font-size:.92rem}.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+.big{font-size:2.2rem;font-weight:700;color:var(--navy);line-height:1.1}.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--soft);border-radius:14px;padding:12px;text-align:center}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 20px;border-radius:30px;z-index:20;max-width:90vw;text-align:center}
+.bars{display:flex;gap:18px;align-items:flex-end;height:120px;margin:10px 0}.bars div{flex:1;background:var(--navy2);border-radius:8px 8px 0 0;color:#fff;text-align:center;min-height:6px;position:relative}.bars div.b2{background:var(--c2)}.bars span{position:absolute;top:-24px;left:0;right:0;color:var(--ink);font-weight:600}
+@media (max-width:420px){html{font-size:16px}.hero{padding:18px 16px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" hidden></div>
+<script>
+/* ===== ตั้งค่า: แก้เฉพาะ 4 ค่านี้ (ห้ามใส่ service_role) ===== */
+const CFG={url:'https://YOUR-PROJECT.supabase.co',key:'YOUR-ANON-PUBLIC-KEY',domain:'school.ac.th',idLen:5};
+const COURSE={name:'วิทยาการคำนวณ',code:'ว21032',school:'โรงเรียนบ้านหนองงูเห่าหางกระดิ่ง',grade:'ชั้นประถมศึกษาปีที่ 3',topic:'ทำความรู้จักความจริงเสริม (AR)'};
+const MV_VER='3.5.0';
+/* โมเดลตัวอย่างที่ครูอนุญาต (เพิ่มได้ ต้องเป็นลิงก์ https ของไฟล์ .glb ที่ใช้ได้อย่างถูกลิขสิทธิ์) */
+const MODELS=[{name:'นักบินอวกาศ',src:'https://modelviewer.dev/shared-assets/models/Astronaut.glb',alt:'โมเดลนักบินอวกาศ 3 มิติ'}];
+const CONFIGURED=!/YOUR-/.test(CFG.url+CFG.key);
+const OBJS=[[["1.1", "บอกได้ว่า AR คือการเห็นภาพเสมือนซ้อนอยู่กับโลกจริง"], ["1.2", "บอกความแตกต่างของ AR กับ VR ได้"], ["1.3", "บอกอุปกรณ์ที่ใช้ดู AR ได้"]], [["2.1", "ยกตัวอย่างการใช้ AR ช่วยเรียนได้อย่างน้อย 2 อย่าง"], ["2.2", "บอกได้ว่า AR เปิดได้จากการสแกนภาพหรือ QR code หรือจากลิงก์หน้าเว็บ"], ["2.3", "บอกทางเลือกเมื่ออุปกรณ์ไม่รองรับ AR ได้"]], [["3.1", "บอกข้อปฏิบัติเพื่อความปลอดภัยในการใช้ AR ได้"], ["3.2", "เรียงลำดับขั้นตอนการเปิด AR ได้ถูกต้อง"], ["3.3", "บอกสิ่งที่ควรตรวจก่อนเมื่อ AR ใช้งานไม่ได้"]], [["4.1", "หมุนดูโมเดล 3 มิติบนหน้าจอได้"], ["4.2", "เปิดโหมด AR และวางโมเดลบนพื้นได้ (หรือใช้ทางเลือกสำรอง)"], ["4.3", "ถ่ายภาพหน้าจอและส่งงานได้"]], [["5.1", "แบ่งงานใหญ่เป็นงานย่อยได้"], ["5.2", "เลือกได้ว่างานใดเหมาะกับ AR"], ["5.3", "เล่าไอเดียของตนเป็นลำดับขั้นตอนสั้น ๆ ได้"]]];
+const TEST={"A": [{"u": "1.1", "q": "ข้อใดบอกความหมายของ AR (ความจริงเสริม) ได้ถูกต้องที่สุด", "o": ["การดูการ์ตูนที่ออกอากาศทางโทรทัศน์", "การดูภาพเสมือนที่ปรากฏซ้อนอยู่กับสิ่งที่เรามองเห็นจริง", "การเข้าไปอยู่ในโลกเกมจนมองไม่เห็นห้องจริง", "การพิมพ์ภาพด้วยเครื่องพิมพ์"]}, {"u": "1.2", "q": "ข้อใดบอกความแตกต่างของ AR กับ VR ได้ถูกต้อง", "o": ["AR กับ VR เหมือนกันทุกอย่าง", "AR ใช้ได้เฉพาะในห้องมืด", "VR ใช้ได้เฉพาะตอนกลางวัน", "VR พาเราไปเห็นโลกเสมือนแทนห้องจริง ส่วน AR ยังเห็นห้องจริงอยู่ด้วย"]}, {"u": "1.3", "q": "อุปกรณ์ในข้อใดใช้ดู AR ได้", "o": ["โทรศัพท์มือถือหรือแท็บเล็ตที่มีกล้องและรองรับ AR", "ไม้บรรทัด", "หนังสือที่ไม่มีภาพ", "กระดานดำ"]}, {"u": "2.1", "q": "ข้อใดเป็นตัวอย่างการใช้ AR ช่วยเรียน", "o": ["ฟังเพลงจากวิทยุ", "เขียนบันทึกลงสมุด", "ส่องมือถือไปที่ภาพในหนังสือแล้วเห็นโมเดลหัวใจลอยขึ้นมาให้หมุนดู", "วาดรูปด้วยสีไม้"]}, {"u": "2.2", "q": "บางหน้าเว็บ AR ให้ส่องไปที่ภาพหรือ QR code ก่อนจึงแสดงโมเดล ภาพหรือ QR code ทำหน้าที่อะไร", "o": ["ทำให้มือถือเย็นลง", "เป็นตัวบอกให้โมเดลปรากฏขึ้น", "เพิ่มความดังของเสียง", "ใช้เปลี่ยนสีหน้าจอ"]}, {"u": "3.1", "q": "ข้อใดปลอดภัยที่สุดเมื่อใช้ AR", "o": ["วิ่งไปทั่วห้องโดยมองแต่หน้าจอ", "ถือมือถือขึ้นบันไดขณะเล่น", "ถ่ายรูปเพื่อนทุกคนโดยไม่ขออนุญาต", "มองรอบตัวก่อน หาที่โล่ง และไม่เดินไปด้วยขณะมองหน้าจอ"]}, {"u": "3.2", "q": "ข้อใดเรียงขั้นตอนการเปิด AR จากลิงก์ของครูได้ถูกต้อง", "o": ["เปิดลิงก์ → กดปุ่ม AR → อนุญาตให้ใช้กล้อง → เล็งพื้นที่โล่ง", "กดปุ่ม AR → เปิดลิงก์ → ปิดกล้อง → เล็งพื้นที่โล่ง", "เล็งพื้นที่โล่ง → ปิดหน้าเว็บ → เปิดลิงก์ → กดปุ่ม AR", "ปิดกล้อง → กดปุ่ม AR → เปิดลิงก์ → เล็งพื้นที่โล่ง"]}, {"u": "3.3", "q": "กดปุ่ม AR แล้วโมเดลไม่ขึ้นบนพื้น ควรตรวจสอบสิ่งใดก่อน", "o": ["เปลี่ยนสีเสื้อ", "ปิดไฟให้มืดที่สุด", "ห้องสว่างพอไหม มีพื้นที่โล่งพอไหม และอนุญาตให้ใช้กล้องแล้วหรือยัง", "เขย่ามือถือแรง ๆ"]}, {"u": "4.1", "q": "เมื่อเห็นโมเดล 3 มิติบนหน้าจอ ทำอย่างไรจึงจะดูโมเดลได้รอบด้าน", "o": ["ปิดหน้าจอ", "กดปุ่มเปิด-ปิดเครื่อง", "วางมือถือคว่ำหน้าจอ", "ใช้นิ้วลากบนโมเดลเพื่อหมุนดู"]}, {"u": "5.1", "q": "นักเรียนอยากทำสื่อ AR เรื่องระบบสุริยะ ควรแบ่งงานใหญ่เป็นงานย่อยอย่างไร", "o": ["ทำทุกอย่างพร้อมกันในครั้งเดียวโดยไม่วางแผน", "แบ่งเป็นดวงอาทิตย์ ดาวแต่ละดวง และคำอธิบายของแต่ละดวง แล้วทำทีละส่วน", "ทำเฉพาะสีพื้นหลังเท่านั้น", "รอให้เพื่อนทำให้ทั้งหมด"]}], "B": [{"u": "1.1", "q": "เมื่อใช้ AR เราจะเห็นอะไรบนหน้าจอ", "o": ["ภาพการ์ตูนเต็มจอ โดยไม่เห็นห้องจริง", "ตัวหนังสืออย่างเดียว", "ภาพเสมือนวางอยู่ในห้องหรือสถานที่จริงของเรา", "หน้าจอมืดสนิท"]}, {"u": "1.2", "q": "ข้อใดอธิบาย VR ได้ถูกต้อง", "o": ["ทำให้เรามองเห็นโลกเสมือนแทนห้องจริงที่อยู่รอบตัว", "ทำให้เห็นภาพเสมือนวางบนโต๊ะเรียนจริง", "ใช้แทนสมุดเรียนทุกวิชา", "ใช้ได้เฉพาะกับตัวหนังสือ"]}, {"u": "1.3", "q": "นักเรียนควรใช้อะไรดูโมเดล AR ในห้องเรียน", "o": ["ปากกาเมจิก", "ยางลบ", "โต๊ะเรียน", "แท็บเล็ตหรือมือถือที่มีกล้อง"]}, {"u": "2.1", "q": "ครูให้ส่องมือถือไปที่พื้น แล้วเห็นโมเดลไดโนเสาร์ยืนอยู่บนพื้นห้องเรียน นี่คือการใช้อะไร", "o": ["VR", "AR", "การพิมพ์ภาพ", "การฟังเสียงเล่านิทาน"]}, {"u": "2.2", "q": "ข้อใดเป็นวิธีเริ่มดู AR ที่ครูเตรียมไว้ในหน้าเว็บ", "o": ["ดึงสายไฟออกจากมือถือ", "ปิดกล้องมือถือ", "สแกน QR code เพื่อเปิดหน้าเว็บ แล้วกดปุ่ม AR", "ปิดหน้าจอมือถือ"]}, {"u": "3.1", "q": "นักเรียนควรทำอย่างไรเมื่อต้องใช้กล้องมือถือเพื่อดู AR", "o": ["ใช้ตามที่ครูอนุญาต และขออนุญาตก่อนถ่ายภาพผู้อื่น", "ถ่ายรูปเพื่อนแล้วส่งให้ทุกคนโดยไม่ถาม", "เปิดกล้องตลอดเวลาแม้ไม่ได้เรียน", "ถ่ายวิดีโอในที่ส่วนตัวของผู้อื่น"]}, {"u": "3.2", "q": "ข้อใดเรียงขั้นตอนการเปิด AR จาก QR code ได้ถูกต้อง", "o": ["อนุญาตให้ใช้กล้อง → สแกน QR code → ปิดหน้าเว็บ → กดปุ่ม AR", "กดปุ่ม AR → ปิดหน้าเว็บ → สแกน QR code → ปิดกล้อง", "ปิดหน้าเว็บ → อนุญาตให้ใช้กล้อง → กดปุ่ม AR → สแกน QR code", "สแกน QR code → เปิดหน้าเว็บ → กดปุ่ม AR → อนุญาตให้ใช้กล้อง"]}, {"u": "3.3", "q": "ข้อใดช่วยให้ AR ทำงานได้ดีขึ้น", "o": ["ปิดไฟให้ห้องมืดที่สุด", "อยู่ในที่ที่มีแสงสว่างพอ และอนุญาตให้หน้าเว็บใช้กล้อง", "ปิดกล้องมือถือ", "ใช้นิ้วปิดเลนส์กล้อง"]}, {"u": "4.1", "q": "นักเรียนต้องการดูด้านหลังของโมเดล 3 มิติบนหน้าจอ ควรทำอย่างไร", "o": ["ลากนิ้วบนโมเดลให้หมุนไปด้านหลัง", "ปิดเสียงมือถือ", "ลบโมเดลทิ้ง", "ถอดเคสมือถือ"]}, {"u": "5.1", "q": "ถ้าจะสร้างสื่อ AR เรื่องส่วนต่าง ๆ ของพืช ควรเริ่มแบ่งงานอย่างไร", "o": ["ทำทั้งหมดพร้อมกันโดยไม่แบ่งส่วน", "ทำชื่อเรื่องอย่างเดียวแล้วจบ", "แบ่งเป็น ราก ลำต้น ใบ ดอก แล้วออกแบบทีละส่วน", "ไม่ต้องทำอะไรเลย"]}]};
+</script>
+<script>
+const sb=(CONFIGURED&&typeof supabase!=='undefined')?supabase.createClient(CFG.url,CFG.key):null;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const para=t=>esc(t).split(/\n\n+/).map(x=>`<p>${x.replace(/\n/g,'<br>')}</p>`).join('');
+const fmt=d=>d?new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}):'-';
+const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const MIME={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',pdf:'application/pdf',mp4:'video/mp4',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'};
+const extOf=(f,allowed)=>{const m=f&&f.name.toLowerCase().match(/\.([a-z0-9]+)$/);return m&&allowed.includes(m[1])?m[1]:null};
+const isHttps=u=>/^https:\/\/\S+$/.test(u||'');
+const idRe=new RegExp('^\\d{'+CFG.idLen+'}$');
+const THAI=/[\u0E00-\u0E7F]/;
+let me=null,view='home',ST={done:new Set(),att:{}};const T=()=>me.role==='teacher';
+const gain=(a,b)=>(a==null||b==null||a>=10)?null:Math.round((b-a)/(10-a)*100)/100;
+const gainTxt=(a,b)=>{if(a==null||b==null)return'-';if(a>=10)return'คำนวณไม่ได้ (ก่อนเรียนได้เต็ม)';return gain(a,b).toFixed(2)};
+const gainLv=g=>g>=0.7?'สูง':g>=0.3?'ปานกลาง':'ต่ำ';
+/* ข้อความผิดพลาดภาษาไทย ไม่แสดงรายละเอียดภายในระบบ (รายละเอียดเต็มไปอยู่ใน Console ของเบราว์เซอร์เท่านั้น) */
+function errTh(e,fb){if(e)console.error(e);const m=(e&&e.message)||'';
+ if(THAI.test(m))return m;
+ if(e&&(e.status===429||/rate limit/i.test(m)))return'มีการใช้งานพร้อมกันมาก รอสักครู่แล้วลองใหม่';
+ if(/fetch|network/i.test(m))return'เชื่อมต่ออินเทอร์เน็ตไม่ได้ ตรวจสัญญาณแล้วลองใหม่';
+ if(e&&(e.code==='23505'))return'ทำรายการนี้ไปแล้ว';
+ if(e&&(e.code==='42501'||/row-level security|not authorized|permission/i.test(m)))return'ไม่มีสิทธิ์ทำรายการนี้';
+ return fb||'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง หรือแจ้งครู'}
+function toast(t){const x=$('#toast');x.textContent=t;x.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>x.hidden=true,2800)}
+const main=h=>{$('#main').innerHTML=h;$$('#main [data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));wireOpen()};
+const go=v=>{view=v;shell()};
+/* เปิดไฟล์ผ่าน signed URL อายุ 5 นาทีเท่านั้น */
+async function openFile(bucket,path){const w=window.open('about:blank','_blank');
+ const{data,error}=await sb.storage.from(bucket).createSignedUrl(path,300);
+ if(error||!data){if(w)w.close();alert(errTh(error,'เปิดไฟล์ไม่ได้ ลองใหม่อีกครั้ง'));return}
+ if(w)w.location.href=data.signedUrl}
+const fileBtn=(b,p,l)=>`<button data-open="${esc(b)}|${esc(p)}">${esc(l||'เปิดไฟล์')}</button>`;
+const wireOpen=()=>$$('[data-open]').forEach(x=>x.onclick=()=>{const[b,...p]=x.dataset.open.split('|');openFile(b,p.join('|'))});
+const linkA=u=>isHttps(u)?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">เปิดลิงก์</a>`:'-';
+
+/* ============ เนื้อหา ============ */
+const FIG={
+1:{cap:'AR คือการนำภาพเสมือนมาวางซ้อนกับโลกจริง',note:'ภาพวาดประกอบคำอธิบาย ไม่ใช่ภาพจากอุปกรณ์จริง',
+ svg:`<svg viewBox="0 0 400 150" role="img" aria-label="โลกจริง บวก ภาพเสมือน เท่ากับ AR"><rect x="6" y="20" width="106" height="100" rx="14" fill="#e6edf6" stroke="#1f3a68"/><text x="59" y="72" font-size="38" text-anchor="middle">🏫</text><text x="59" y="104" font-size="16" text-anchor="middle" fill="#1e293b">โลกจริง</text><text x="130" y="80" font-size="30" text-anchor="middle" fill="#1f3a68">+</text><rect x="147" y="20" width="106" height="100" rx="14" fill="#e6edf6" stroke="#1f3a68"/><text x="200" y="72" font-size="38" text-anchor="middle">🧊</text><text x="200" y="104" font-size="16" text-anchor="middle" fill="#1e293b">ภาพเสมือน</text><text x="271" y="80" font-size="30" text-anchor="middle" fill="#1f3a68">=</text><rect x="288" y="20" width="106" height="100" rx="14" fill="#1f3a68"/><text x="341" y="72" font-size="38" text-anchor="middle">📱</text><text x="341" y="104" font-size="16" text-anchor="middle" fill="#fff">AR</text></svg>`},
+2:{cap:'เส้นต่อเนื่องจากโลกจริงไปถึงโลกเสมือน AR อยู่ใกล้ฝั่งโลกจริง ส่วน VR อยู่ปลายฝั่งโลกเสมือน',note:'ปรับให้ง่ายจากแนวคิด reality–virtuality continuum ของ Milgram และ Kishino (1994)',
+ svg:`<svg viewBox="0 0 400 150" role="img" aria-label="เส้นจากโลกจริงไปโลกเสมือน มี AR อยู่ใกล้โลกจริง"><defs><linearGradient id="g2"><stop offset="0" stop-color="#d4e2f2"/><stop offset="1" stop-color="#1f3a68"/></linearGradient></defs><rect x="20" y="62" width="360" height="22" rx="11" fill="url(#g2)"/><circle cx="115" cy="73" r="15" fill="#fff" stroke="#1f3a68" stroke-width="2"/><text x="115" y="48" font-size="18" text-anchor="middle" fill="#1f3a68" font-weight="700">AR</text><text x="20" y="112" font-size="15" fill="#1e293b">โลกจริง</text><text x="380" y="112" font-size="15" text-anchor="end" fill="#1e293b">โลกเสมือน (VR)</text><text x="200" y="138" font-size="13" text-anchor="middle" fill="#475569">ยิ่งไปทางขวา ยิ่งเห็นโลกเสมือนมากขึ้น</text></svg>`},
+3:{cap:'ลำดับขั้นตอนการเปิด AR จากลิงก์ของครู',note:'ถ้าขั้นใดทำไม่ได้ ให้กลับไปตรวจขั้นก่อนหน้า',
+ svg:`<svg viewBox="0 0 360 340" role="img" aria-label="ขั้นตอนเปิด AR 5 ขั้น"><g font-size="17" fill="#1e293b"><rect x="30" y="8" width="300" height="46" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="180" y="38" text-anchor="middle">1  เปิดลิงก์ของครู</text><rect x="30" y="75" width="300" height="46" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="180" y="105" text-anchor="middle">2  กดปุ่ม AR</text><rect x="30" y="142" width="300" height="46" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="180" y="172" text-anchor="middle">3  อนุญาตให้ใช้กล้อง</text><rect x="30" y="209" width="300" height="46" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="180" y="239" text-anchor="middle">4  เล็งพื้นที่โล่งและมีแสงพอ</text><rect x="30" y="276" width="300" height="46" rx="12" fill="#1f3a68"/><text x="180" y="306" text-anchor="middle" fill="#fff">5  ส่องดูโมเดลรอบ ๆ</text></g><g fill="#1f3a68"><path d="M180 56v16m-6-6l6 8 6-8z"/><path d="M180 123v16m-6-6l6 8 6-8z"/><path d="M180 190v16m-6-6l6 8 6-8z"/><path d="M180 257v16m-6-6l6 8 6-8z"/></g></svg>`},
+4:{cap:'การแบ่งงานใหญ่เป็นงานย่อย ตัวอย่าง: สื่อ AR เรื่องสัตว์ในฟาร์ม',note:'ภาพวาดประกอบคำอธิบาย แสดงแนวคิดการแยกส่วนปัญหา (decomposition)',
+ svg:`<svg viewBox="0 0 400 190" role="img" aria-label="งานใหญ่แบ่งเป็นสามงานย่อย"><g stroke="#475569" stroke-width="2" fill="none"><path d="M200 52L68 122M200 52V122M200 52L332 122"/></g><rect x="90" y="8" width="220" height="44" rx="12" fill="#1f3a68"/><text x="200" y="36" font-size="16" text-anchor="middle" fill="#fff">สื่อ AR เรื่องสัตว์ในฟาร์ม</text><g font-size="15" fill="#1e293b" text-anchor="middle"><rect x="10" y="122" width="116" height="52" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="68" y="153">เลือกสัตว์</text><rect x="142" y="122" width="116" height="52" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="200" y="153">หาโมเดล 3 มิติ</text><rect x="274" y="122" width="116" height="52" rx="12" fill="#e6edf6" stroke="#1f3a68"/><text x="332" y="153">เขียนคำอธิบาย</text></g></svg>`}};
+const figHtml=n=>{const f=FIG[n];return `<figure>${f.svg}<figcaption><b>ภาพที่ ${n}</b> ${esc(f.cap)}<br><span class="mut">หมายเหตุ: ${esc(f.note)}</span></figcaption></figure>`};
+
+const UNITS=[
+{t:'AR คืออะไร',ic:'🔍',min:10,col:'var(--c1)',obj:OBJS[0],
+ secs:[{h:'AR คือ "ความจริงเสริม"',p:'AR มาจากคำว่า Augmented Reality แปลว่า "ความจริงเสริม" คือการมองเห็นภาพที่คอมพิวเตอร์สร้างขึ้น มาวางซ้อนอยู่กับสิ่งที่อยู่ตรงหน้าเราจริง ๆ ผ่านกล้องของมือถือหรือแท็บเล็ต\n\nAR มีลักษณะสำคัญ 3 อย่าง คือ (1) มีทั้งของจริงและของเสมือนอยู่ด้วยกัน (2) ตอบสนองเราได้ทันทีเมื่อเราขยับ (3) ภาพเสมือนอยู่ถูกตำแหน่งในที่จริง เช่น วางอยู่บนโต๊ะ ไม่ลอยไปมา',f:1},
+  {h:'AR ต่างจาก VR อย่างไร',p:'VR (Virtual Reality) พาเราเข้าไปในโลกเสมือนเกือบทั้งหมด มักต้องใส่อุปกรณ์ครอบตา จึงมองไม่เห็นห้องจริง\n\nส่วน AR ยังให้เรามองเห็นห้องจริงอยู่ แล้วเพิ่มภาพเสมือนเข้ามา',f:2},
+  {h:'ใช้อะไรดู AR',p:'มือถือหรือแท็บเล็ตที่มีกล้องและรองรับ AR ก็ดู AR ได้ นอกจากนี้ยังมีแว่นสำหรับดู AR โดยเฉพาะ แต่ในห้องเรียนเรานิยมใช้มือถือหรือแท็บเล็ต เพราะหาได้ง่ายกว่า'}],
+ ex:'ตัวอย่าง: ครูให้ส่องมือถือไปที่ภาพหัวใจในหนังสือ แล้วเห็นโมเดลหัวใจ 3 มิติลอยขึ้นมา เมื่อเดินรอบ ๆ ก็เห็นหัวใจคนละด้าน',
+ tn:'ลักษณะ 3 ข้อของ AR สอดคล้องกับนิยามของ Azuma (1997) ที่ปรับเป็นภาษาเด็ก ภาพที่ 2 ปรับจากแนวคิดของ Milgram และ Kishino (1994)',
+ qs:[{q:'ข้อใดเป็น AR',o:['ดูการ์ตูนในโทรทัศน์','เห็นโมเดลสัตว์วางอยู่บนโต๊ะจริงผ่านกล้องมือถือ','ฟังเพลงจากวิทยุ','อ่านหนังสือนิทานหนึ่งเล่ม'],a:1,h:'AR ต้องมีของจริงอยู่ด้วย แล้วมีภาพเสมือนมาวางซ้อน',why:'เห็นโมเดลวางอยู่บนโต๊ะจริงผ่านกล้อง คือภาพเสมือนซ้อนกับโลกจริง'},
+     {q:'ถ้ามองไม่เห็นห้องจริงเลย เห็นแต่โลกเสมือนรอบตัว จะเรียกว่าอะไร',o:['AR','ภาพวาด','เสียงเพลง','VR'],a:3,h:'ดูภาพที่ 2 ว่าอยู่ปลายทางด้านขวา',why:'VR พาเราเข้าไปในโลกเสมือนแทนที่โลกจริง'}]},
+{t:'AR ในการเรียนและวิธีเปิด AR',ic:'🧭',min:10,col:'var(--c2)',obj:OBJS[1],
+ secs:[{h:'AR ช่วยเรียนอย่างไร',p:'AR ช่วยให้เรามองเห็นสิ่งที่จับต้องหรือเข้าไปดูจริงไม่ได้ เช่น หัวใจของคน ภูเขาไฟ หรือระบบสุริยะ เราหมุนดูได้หลายมุมและขยับเข้าไปดูใกล้ ๆ ได้'},
+  {h:'เปิด AR ได้อย่างไร',p:'• สแกนภาพหรือ QR code ที่ครูเตรียมไว้ แล้วโมเดลจะปรากฏขึ้น\n• เปิดลิงก์หน้าเว็บ AR ในเบราว์เซอร์ แล้วกดปุ่ม AR โดยปกติไม่ต้องติดตั้งแอปเพิ่ม (ขึ้นอยู่กับรุ่นของเครื่อง)\n• ใช้กล้องมองพื้นหรือโต๊ะ แล้ววางโมเดลลงบนพื้นผิวนั้น'},
+  {h:'เมื่อเปิด AR ไม่ได้',p:'ไม่ใช่ทุกเครื่องที่รองรับ AR ถ้าเปิดไม่ได้ ไม่ต้องกังวล ยังมีทางเลือกอื่น เช่น หมุนดูโมเดล 3 มิติบนหน้าจอ ดูภาพโมเดลหลายมุม ดูวิดีโอ หรือดูร่วมกับเพื่อนที่เครื่องรองรับ'}],
+ ex:'ตัวอย่าง: ครูติด QR code ไว้ข้างภาพระบบสุริยะ นักเรียนสแกนแล้วเห็นดาวเคราะห์ลอยอยู่เหนือโต๊ะ ส่วนเพื่อนที่เครื่องเปิด AR ไม่ได้ ก็หมุนดูดาวเคราะห์บนหน้าจอแทน',
+ qs:[{q:'ข้อใดเป็นข้อดีของการเปิด AR จากลิงก์หรือ QR code ที่ครูให้',o:['โดยปกติไม่ต้องติดตั้งแอปเพิ่ม','ต้องซื้อแว่นพิเศษ','ใช้ได้โดยไม่ต้องมีมือถือ','ใช้ได้เฉพาะตอนกลางคืน'],a:0,h:'ย้อนอ่านหัวข้อ "เปิด AR ได้อย่างไร"',why:'เปิดจากลิงก์ผ่านเบราว์เซอร์ได้ โดยปกติไม่ต้องติดตั้งแอปเพิ่ม'},
+     {q:'เพื่อนมือถือเปิด AR ไม่ได้ ควรทำอย่างไร',o:['ให้เลิกเรียน','ให้หมุนดูโมเดลบนหน้าจอ หรือดูร่วมกับเพื่อนที่เครื่องรองรับ','ให้ซื้อเครื่องใหม่ทันที','ให้นั่งเฉย ๆ'],a:1,h:'ย้อนอ่านหัวข้อ "เมื่อเปิด AR ไม่ได้"',why:'มีทางเลือกสำรองให้เรียนได้ทุกคน เช่น หมุนดูบนหน้าจอหรือดูร่วมกับเพื่อน'}]},
+{t:'ใช้ AR อย่างปลอดภัยและเป็นขั้นตอน',ic:'🛡️',min:12,col:'var(--c3)',obj:OBJS[2],
+ secs:[{h:'กฎความปลอดภัย 5 ข้อ',p:'1) ขออนุญาตครูหรือผู้ปกครองก่อนใช้กล้อง\n2) มองรอบตัวก่อนใช้ และยืนอยู่ในที่โล่ง\n3) ไม่เดินหรือวิ่งขณะมองหน้าจอ\n4) ไม่ถ่ายภาพหรือวิดีโอของผู้อื่นโดยไม่ขออนุญาต\n5) พักสายตาเป็นระยะ'},
+  {h:'ทำตามลำดับขั้นตอน',p:'การทำสิ่งต่าง ๆ ให้สำเร็จ ต้องรู้ว่าทำอะไรก่อนอะไรหลัง ลำดับขั้นตอนที่ชัดเจนเรียกว่า "อัลกอริทึม" เป็นแนวคิดสำคัญของวิชาวิทยาการคำนวณ ดูขั้นตอนการเปิด AR ในภาพที่ 3',f:3},
+  {h:'ถ้า AR ไม่ทำงาน ตรวจอะไรบ้าง',p:'• ห้องสว่างพอหรือไม่\n• มีพื้นที่โล่งให้วางโมเดลหรือไม่\n• อนุญาตให้ใช้กล้องแล้วหรือยัง\n• อินเทอร์เน็ตใช้ได้หรือไม่\n\nการหาว่าผิดพลาดตรงไหนแล้วแก้ทีละข้อ คือการ "แก้จุดบกพร่อง" ที่นักคอมพิวเตอร์ทำเป็นประจำ'}],
+ ex:'ตัวอย่าง: นักเรียนกดปุ่ม AR แล้วโมเดลไม่ขึ้น จึงตรวจทีละข้อ พบว่ายังไม่ได้กดอนุญาตให้ใช้กล้อง เมื่อกดอนุญาตแล้วโมเดลก็ปรากฏ',
+ tn:'ข้อห้ามเรื่องการถ่ายภาพผู้อื่นสอดคล้องกับข้อกังวลเรื่องความเป็นส่วนตัวของกล้องใน AR ควรย้ำกฎโรงเรียนเรื่องการใช้โทรศัพท์ในห้องเรียนเพิ่มเติมตามบริบทจริง',
+ qs:[{q:'ข้อใดปลอดภัยเมื่อใช้ AR',o:['วิ่งไปรอบห้องขณะมองหน้าจอ','ถ่ายรูปเพื่อนโดยไม่ถาม','มองรอบตัวก่อนและยืนอยู่ในที่โล่ง','ใช้ขณะเดินลงบันได'],a:2,h:'ย้อนอ่านกฎความปลอดภัย 5 ข้อ',why:'ต้องมองรอบตัวและอยู่ในที่โล่ง เพื่อไม่ให้ชนหรือสะดุด'},
+     {q:'ขั้นตอนแรกของการดูโมเดล AR จากลิงก์ของครูคืออะไร',o:['เล็งพื้น','เปิดลิงก์ของครูในมือถือหรือแท็บเล็ต','ปิดกล้อง','ถ่ายภาพหน้าจอ'],a:1,h:'ดูภาพที่ 3 ขั้นที่ 1',why:'ต้องเปิดหน้าเว็บก่อน จึงจะมีปุ่ม AR ให้กด'}]},
+{t:'ปฏิบัติ: ดูโมเดล 3 มิติและส่งงาน',ic:'🧪',min:25,col:'var(--c4)',obj:OBJS[3],
+ secs:[{h:'ลองดูโมเดล 3 มิติ',p:'ในหน่วยนี้ นักเรียนจะลองหมุนดูโมเดล 3 มิติที่ครูเตรียมไว้ ถ้ามือถือรองรับ AR ให้ลองวางโมเดลบนพื้นห้อง แล้วถ่ายภาพหน้าจอมาส่งครู ทำตามขั้นตอนด้านล่างทีละข้อ'}],
+ ex:'ตัวอย่าง: นักเรียนคนหนึ่งหมุนดูนักบินอวกาศจนเห็นรอบตัว แล้วกดปุ่ม AR เห็นนักบินยืนอยู่บนพื้นห้องเรียน จึงถ่ายภาพหน้าจอส่งครูพร้อมเขียนว่า "เห็นนักบินยืนอยู่ข้างโต๊ะ"',
+ qs:[{q:'การซูมโมเดลให้ใหญ่ขึ้นบนหน้าจอทำได้อย่างไร',o:['ใช้สองนิ้วกางออกบนโมเดล (หรือเลื่อนล้อเมาส์บนคอมพิวเตอร์)','ปิดไฟห้อง','ลบโมเดล','พับมือถือ'],a:0,h:'นึกถึงตอนขยายรูปในมือถือ',why:'การกางสองนิ้วทำให้โมเดลขยายใหญ่ขึ้น เหมือนการขยายรูปภาพ'},
+     {q:'ถ้ามือถือเปิด AR ไม่ได้ จะส่งงานได้ไหม',o:['ส่งไม่ได้','ส่งได้ โดยถ่ายภาพหน้าจอโมเดลที่หมุนดูแล้วมาส่ง','ต้องรอซื้อเครื่องใหม่','ต้องเลิกเรียน'],a:1,h:'ย้อนอ่านขั้นตอนข้อ 4 และ 5',why:'มีทางเลือกสำรอง ส่งภาพหน้าจอโมเดลที่หมุนดูแล้วได้'}]},
+{t:'คิดไอเดีย AR ของฉัน',ic:'💡',min:15,col:'var(--c5)',obj:OBJS[4],
+ secs:[{h:'เริ่มจากคำถามว่าอยากให้เพื่อนเรียนรู้อะไร',p:'ก่อนคิดว่าจะใช้ AR ให้ถามตัวเองก่อนว่า "อยากให้เพื่อนเรียนรู้เรื่องอะไร" แล้วถามต่อว่า "AR ช่วยตรงนี้ได้ดีกว่าภาพนิ่งหรือวิดีโอไหม" เช่น ถ้าต้องดูหลายด้านหรือหมุนดู AR ช่วยได้ดี แต่ถ้าแค่อ่านชื่อ ภาพนิ่งก็พอ'},
+  {h:'แบ่งงานใหญ่เป็นงานย่อย',p:'งานใหญ่ทำยากถ้าทำทีเดียว เราจึงแบ่งเป็นงานย่อย ๆ แล้วทำทีละขั้น วิธีนี้เรียกว่า "การแยกส่วนปัญหา" ดูตัวอย่างในภาพที่ 4',f:4},
+  {h:'เล่าไอเดียเป็นขั้นตอนสั้น ๆ',p:'ลองเล่าไอเดียให้เพื่อนฟัง 3 ประโยค\n1) ไอเดียของฉันคือ ...\n2) ใช้ AR เพราะ ...\n3) ขั้นตอนที่จะทำคือ ... แล้ว ... แล้ว ...'}],
+ ex:'ตัวอย่าง: "ไอเดียของฉันคือโมเดลภูเขาไฟ ใช้ AR เพราะเดินรอบ ๆ แล้วเห็นข้างในได้หลายมุม ขั้นตอนคือ เลือกภูเขาไฟ แล้วหาโมเดล แล้วเขียนคำอธิบาย"',
+ tn:'หน่วยนี้เชื่อมกับแนวคิดการคิดเชิงคำนวณ (การแยกส่วนปัญหา และอัลกอริทึม) ผู้สอนระบุตัวชี้วัดของหลักสูตรสถานศึกษาที่ใช้เอง',
+ qs:[{q:'ไอเดียใดเหมาะกับ AR มากที่สุด',o:['อ่านรายชื่อจังหวัดจากตาราง','ดูโครงสร้างภายในของภูเขาไฟโดยเดินรอบ ๆ ให้เห็นหลายมุม','ท่องคำศัพท์จากบัตรคำ','นับเลขหนึ่งถึงสิบ'],a:1,h:'AR เหมาะกับสิ่งที่ต้องดูหลายมุม',why:'การดูหลายมุมและเดินรอบ ๆ เป็นจุดเด่นที่ AR ช่วยได้'},
+     {q:'ข้อใดคือการแบ่งงานใหญ่เป็นงานย่อย',o:['ทำทุกอย่างพร้อมกันโดยไม่วางแผน','ทำแค่ชื่อเรื่องแล้วหยุด','รอเพื่อนทำให้','แบ่งงานเป็นขั้นเล็ก ๆ แล้วทำทีละขั้น'],a:3,h:'ดูภาพที่ 4',why:'การแบ่งเป็นขั้นเล็ก ๆ แล้วทำทีละขั้นช่วยให้งานใหญ่ทำได้ง่ายขึ้น'}]}
+];
+const TOTAL_MIN=UNITS.reduce((a,u)=>a+u.min,0);
+
+/* ============ หน้าตั้งค่า / เข้าสู่ระบบ ============ */
+function setupUI(){app.innerHTML=`<main><div class="card"><h2>🛠️ ยังไม่ได้ตั้งค่าระบบ</h2>
+ <p>หน้านี้ต้องเชื่อมกับ Supabase ก่อนจึงจะใช้งานได้ ให้ผู้สอนทำดังนี้</p>
+ <ol><li>สร้างโปรเจกต์ที่ supabase.com แล้วรัน <code>setup.sql</code> ใน SQL Editor</li>
+ <li>ไปที่ Project Settings &gt; API แล้วคัดลอก <b>Project URL</b> และ <b>anon public key</b> (ห้ามใช้ service_role)</li>
+ <li>เปิดไฟล์ <code>courseware.html</code> ด้วย Notepad แก้ค่า <code>url</code> และ <code>key</code> ในส่วน <code>CFG</code> ใกล้ต้นไฟล์ แล้วบันทึก</li>
+ <li>อัปโหลดไฟล์ขึ้นเว็บที่เปิดผ่าน https แล้วเปิดลิงก์ใหม่</li></ol>
+ <p class="mut">ดูรายละเอียดทั้งหมดในไฟล์ README.md ตอนที่ 4</p></div></main>`}
+function loginUI(m=''){app.innerHTML=`<div class="card" id="login"><div class="hero" style="margin:0;border-radius:0"><span class="em float">🧊</span><h2>${esc(COURSE.name)}</h2>
+ <span class="chip">${esc(COURSE.code)}</span><span class="chip">${esc(COURSE.grade)}</span><p>${esc(COURSE.topic)}</p><p style="font-size:.85rem">${esc(COURSE.school)}</p></div>
+ <div class="in"><p class="mut">นักเรียน: ใช้เลขประจำตัว ${CFG.idLen} หลัก | ครู: ใช้อีเมล<br>สมัครครั้งแรกให้ตั้งรหัสผ่านที่จำได้ (อย่างน้อย 6 ตัว)</p>
+ <input id="id" placeholder="เลขประจำตัวนักเรียน หรือ อีเมล" autocomplete="username" inputmode="text">
+ <input id="pw" type="password" placeholder="รหัสผ่าน" autocomplete="current-password">
+ <div class="row"><button class="p" id="bin">เข้าสู่ระบบ</button><button id="bup">สมัครใช้งานครั้งแรก</button></div><p id="msg" class="bad">${esc(m)}</p></div></div>`;
+ $('#bin').onclick=()=>auth(false);$('#bup').onclick=()=>auth(true);$('#pw').onkeydown=e=>{if(e.key==='Enter')auth(false)}}
+async function auth(up){const id=$('#id').value.trim(),pw=$('#pw').value,stu=idRe.test(id),msg=$('#msg');
+ if(!id||pw.length<6){msg.textContent='กรอกข้อมูลให้ครบ (รหัสผ่านอย่างน้อย 6 ตัว)';return}
+ if(!stu&&!id.includes('@')){msg.textContent=`เลขประจำตัวนักเรียนต้องเป็นตัวเลข ${CFG.idLen} หลัก`;return}
+ const email=stu?`${id}@${CFG.domain}`:id.toLowerCase();msg.textContent='กำลังตรวจสอบ...';
+ let r;try{r=up?await sb.auth.signUp({email,password:pw}):await sb.auth.signInWithPassword({email,password:pw})}catch(e){msg.textContent=errTh(e);return}
+ if(r.error){console.error(r.error);msg.textContent=(r.error.status===429||/fetch|network/i.test(r.error.message||''))?errTh(r.error):(up?'สมัครไม่ได้: เลขประจำตัวไม่อยู่ในรายชื่อ หรือถูกใช้สมัครแล้ว (ถ้าเคยสมัครแล้ว ให้กดเข้าสู่ระบบ)':'เข้าสู่ระบบไม่ได้: เลขประจำตัวหรือรหัสผ่านไม่ถูกต้อง');return}
+ if(!r.data.session){msg.textContent='ยังเข้าระบบไม่ได้: แจ้งครูตรวจว่าปิด Confirm email ใน Supabase แล้ว';return}
+ boot()}
+async function boot(){let session;try{({data:{session}}=await sb.auth.getSession())}catch(e){return loginUI(errTh(e))}
+ if(!session)return loginUI();const uid=session.user.id;
+ try{const t=await sb.from('teachers').select('user_id').eq('user_id',uid).maybeSingle();
+ if(t.data){me={uid,role:'teacher',name:session.user.email};view='results';return shell()}
+ const s=await sb.from('students').select('*').eq('user_id',uid).maybeSingle();
+ if(s.data){me={uid,role:'student',st:s.data,name:`${s.data.title||''}${s.data.first_name} ${s.data.last_name}`};view='home';return shell()}}catch(e){console.error(e)}
+ await sb.auth.signOut();loginUI('บัญชีนี้ยังไม่ได้รับสิทธิ์ (ถ้าเป็นครู ต้องรันคำสั่งตั้งผู้สอนใน setup.sql ก่อน)')}
+
+/* ============ โครงหน้า ============ */
+const V={home:vHome,test:sTest,units:vUnits,summary:sSummary,mats:vMats,profile:sProfile,results:tResults,work:tWork,keys:tKeys};
+async function loadState(){const[a,p]=await Promise.all([sb.from('attempts').select('kind,score,form,answers,created_at').eq('user_id',me.uid),sb.from('progress').select('unit,done').eq('user_id',me.uid)]);
+ if(a.error)throw a.error;if(p.error)throw p.error;
+ ST.att=Object.fromEntries((a.data||[]).map(x=>[x.kind,x]));ST.done=new Set((p.data||[]).filter(x=>x.done).map(x=>x.unit))}
+async function shell(){
+ const tabs=T()?[['results','📊 สรุปผล'],['work','✏️ ตรวจงาน'],['mats','📎 สื่อการเรียน'],['keys','🔑 ข้อสอบและเฉลย'],['units','📚 ดูบทเรียน']]
+  :[['home','🏠 แนะนำ'],['test','📝 ทดสอบ'],['units','📚 บทเรียน'],['summary','📊 สรุปผล'],['mats','🎁 สื่อเพิ่มเติม'],['profile','🙂 โปรไฟล์']];
+ if(!tabs.some(t=>t[0]===view))view=tabs[0][0];
+ app.innerHTML=`<header><div class="t"><b>${esc(COURSE.name)} (${esc(COURSE.code)})</b><span>${esc(COURSE.school)}</span></div><span class="u">${esc(me.name)}${T()?' (ครู)':''}</span><button id="out">ออกจากระบบ</button></header>
+ <nav>${tabs.map(t=>`<button data-v="${t[0]}" class="${t[0]===view?'on':''}">${t[1]}</button>`).join('')}</nav><main id="main"><p class="mut">กำลังโหลด...</p></main>`;
+ $('#out').onclick=async()=>{await sb.auth.signOut();me=null;ST={done:new Set(),att:{}};loginUI()};
+ $$('nav button').forEach(b=>b.onclick=()=>{view=b.dataset.v;shell()});
+ try{if(!T())await loadState();await V[view]()}catch(e){main(`<p class="bad">${esc(errTh(e,'โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้า'))}</p>`)}}
+
+/* ============ หน้าแนะนำ ============ */
+function nextStep(){if(!ST.att.pre)return{v:'test',t:'ทำแบบทดสอบก่อนเรียน'};for(let i=0;i<5;i++)if(!ST.done.has(i+1))return{v:'units',t:`เรียนหน่วยที่ ${i+1}`};
+ if(!ST.att.post)return{v:'test',t:'ทำแบบทดสอบหลังเรียน'};return{v:'summary',t:'ดูสรุปผลของฉัน'}}
+function vHome(){const pre=ST.att.pre,post=ST.att.post,n=(pre?1:0)+ST.done.size+(post?1:0),pct=Math.round(n/7*100),nx=nextStep();
+ const steps=[{ic:'📝',t:'ก่อนเรียน',ok:!!pre},...UNITS.map((u,i)=>({ic:u.ic,t:`หน่วย ${i+1}`,s:u.t,ok:ST.done.has(i+1)})),{ic:'🏁',t:'หลังเรียน',ok:!!post}];
+ const cur=steps.findIndex(s=>!s.ok);
+ main(`<div class="hero"><span class="em float">🧊</span><h2>สวัสดี ${esc(me.st.first_name)} 👋</h2><p>ยินดีต้อนรับสู่การเรียนรู้เรื่อง AR ลองดูสิ ภาพเสมือนมาอยู่ในห้องเรียนของเราได้อย่างไร</p>
+ <span class="chip">${esc(COURSE.code)}</span><span class="chip">${esc(COURSE.grade)}</span><span class="chip">ใช้เวลาเรียนประมาณ ${TOTAL_MIN} นาที</span></div>
+ <div class="card"><b>เส้นทางการเรียนของฉัน</b> <span class="mut">ทำแล้ว ${n} จาก 7 ขั้น</span><div class="bar"><i style="width:${pct}%"></i></div>
+ <div class="path">${steps.map((s,i)=>`<div class="stop ${s.ok?'done':i===cur?'cur':'lock'}"><span class="ic">${s.ok?'✅':i===cur?s.ic:'🔒'}</span><b>${s.t}</b>${s.s?`<br><span class="mut">${esc(s.s)}</span>`:''}</div>`).join('')}</div>
+ <button class="p" data-go="${nx.v}">▶ ไปต่อ: ${nx.t}</button></div>
+ <div class="card soft"><h3>เรียนอย่างไร</h3><ol><li>ทำแบบทดสอบก่อนเรียน (10 ข้อ ทำได้ครั้งเดียว) เพื่อดูว่าตอนนี้เรารู้อะไรแล้วบ้าง</li><li>เรียนหน่วยที่ 1 ถึง 5 ตามลำดับ แต่ละหน่วยมีคำถามแทรก ต้องตอบให้ถูกครบจึงไปหน่วยต่อไปได้ และกลับมาทบทวนได้</li><li>ทำแบบทดสอบหลังเรียน แล้วดูเฉลยและคำอธิบาย</li><li>ดูสรุปผล คะแนนงาน และข้อเสนอแนะจากครู</li></ol>
+ <p class="mut">วิชา${esc(COURSE.name)} เรื่อง${esc(COURSE.topic)} ${esc(COURSE.school)} ถ้าติดขัดให้ถามครูได้เสมอ</p></div>`)}
+
+/* ============ บทเรียน ============ */
+async function vUnits(){const un=i=>T()||(ST.att.pre&&(i===0||ST.done.has(i)));
+ main((!T()&&!ST.att.pre?`<div class="card soft">🔒 ทำ<b>แบบทดสอบก่อนเรียน</b>ก่อน จึงจะเริ่มเรียนหน่วยที่ 1 ได้ <button class="p" data-go="test">ไปทำแบบทดสอบ</button></div>`:'')
+ +`<p class="mut">5 หน่วย รวมประมาณ ${TOTAL_MIN} นาที</p>`+UNITS.map((u,i)=>{const d=ST.done.has(i+1),open=un(i);
+ return `<div class="unit ${open?'':'locked'}" style="--uc:${u.col}"><div class="row"><span class="no">${i+1}</span><div style="flex:1;min-width:150px"><b>${u.ic} ${esc(u.t)}</b><br><span class="mut">ประมาณ ${u.min} นาที</span></div>
+ ${T()?'':`<span class="${d?'ok':'mut'}" id="st${i}">${d?'เรียนแล้ว ✓':open?'พร้อมเรียน':'🔒 ยังไม่เปิด'}</span>`}<button data-u="${i}" ${open?'':'disabled'}>${open?'เปิด/ปิด':'🔒'}</button></div><div id="U${i}"></div></div>`}).join(''));
+ $$('[data-u]').forEach(b=>b.onclick=()=>{const i=+b.dataset.u,box=$('#U'+i);if(box.innerHTML){box.innerHTML='';return}openUnit(i)})}
+function openUnit(i){const box=$('#U'+i);if(!box||box.innerHTML)return;box.innerHTML=unitHtml(i);wireUnit(i,box);box.scrollIntoView({behavior:'smooth',block:'start'})}
+function unitHtml(i){const u=UNITS[i];
+ return `<h4>🎯 จุดประสงค์ (เมื่อเรียนจบ นักเรียนสามารถ)</h4><ul>${u.obj.map(([id,t])=>`<li><span class="tag">${id}</span> ${esc(t)}</li>`).join('')}</ul>`
+ +u.secs.map(s=>`<h4>${esc(s.h)}</h4>${para(s.p)}${s.f?figHtml(s.f):''}`).join('')
+ +`<div class="ex">${para(u.ex)}</div>`+(T()&&u.tn?`<div class="tnote"><b>สำหรับครู:</b> ${esc(u.tn)}</div>`:'')+(i===3?practiceHtml():'')
+ +`<h4>❓ คำถามแทรก</h4>`+u.qs.map((q,k)=>`<div class="card soft"><b>${k+1}. ${esc(q.q)}</b>${q.o.map((o,j)=>`<label class="qopt"><input type="radio" name="u${i}q${k}" data-k="${k}" value="${j}"><span class="lt">${'กขคง'[j]}</span><span>${esc(o)}</span></label>`).join('')}<div id="fb${i}_${k}"></div></div>`).join('')
+ +(T()?'':`<button class="p" id="dn${i}">✅ ฉันเรียนหน่วยนี้แล้ว</button> <span class="mut" id="dm${i}"></span>`)}
+function wireUnit(i,box){const u=UNITS[i],dn=$('#dn'+i),msg=$('#dm'+i);
+ const ready=()=>u.qs.every((q,k)=>{const c=box.querySelector(`input[name=u${i}q${k}]:checked`);return c&&+c.value===q.a});
+ const refresh=()=>{if(!dn)return;if(ST.done.has(i+1)){dn.disabled=true;dn.textContent='เรียนแล้ว ✓';msg.textContent='';return}const ok=ready();dn.disabled=!ok;msg.textContent=ok?'':'ตอบคำถามแทรกให้ถูกครบทุกข้อ ปุ่มนี้จึงจะกดได้'};
+ box.querySelectorAll('input[type=radio][data-k]').forEach(r=>r.onchange=()=>{const k=+r.dataset.k,q=u.qs[k],ok=+r.value===q.a;
+  box.querySelectorAll(`input[name=u${i}q${k}]`).forEach(x=>x.closest('.qopt').classList.toggle('sel',x.checked));
+  $(`#fb${i}_${k}`).innerHTML=`<div class="fb ${ok?'ok':'bad'}">${ok?'✓ <b>ถูกต้อง!</b> '+esc(q.why):'💡 <b>ลองคิดอีกครั้ง</b> '+esc(q.h)}</div>`;refresh()});
+ if(dn)dn.onclick=async()=>{dn.disabled=true;let r=await sb.from('progress').update({done:true}).eq('user_id',me.uid).eq('unit',i+1).select();
+  if(!r.error&&!(r.data||[]).length)r=await sb.from('progress').insert({user_id:me.uid,unit:i+1,done:true});
+  if(r.error){msg.textContent=errTh(r.error,'บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง');dn.disabled=false;return}
+  ST.done.add(i+1);toast(`🎉 เก่งมาก! เรียนหน่วยที่ ${i+1} แล้ว`);await vUnits();if(i<4)openUnit(i+1)};
+ refresh();if(i===3)wirePractice(box)}
+
+/* ---- หน่วยที่ 4: ปฏิบัติ ---- */
+const SNIP=`<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/${MV_VER}/model-viewer.min.js"><\/script>\n<model-viewer src="https://ตัวอย่าง.com/model.glb"\n  alt="คำอธิบายโมเดลสำหรับผู้ใช้ที่มองไม่เห็นภาพ"\n  ar ar-modes="webxr scene-viewer quick-look"\n  camera-controls touch-action="pan-y"\n  style="width:100%;height:400px">\n</model-viewer>`;
+function practiceHtml(){const m=MODELS[0];return `<h4>🧊 ลองหมุนโมเดลดูเลย</h4>
+ <model-viewer id="mv" src="${esc(m.src)}" alt="${esc(m.alt)}" ar ar-modes="webxr scene-viewer quick-look" camera-controls touch-action="pan-y" auto-rotate shadow-intensity="1"><button slot="ar-button" class="arbtn">👀 ดูในห้องของฉัน (AR)</button></model-viewer>
+ <p class="mut">ลากนิ้วเพื่อหมุน กางสองนิ้วเพื่อซูม ปุ่ม AR จะโผล่มาเฉพาะเครื่องที่รองรับ AR (ต้องเปิดผ่าน https) ถ้าโมเดลไม่ขึ้น ให้แจ้งครู</p>
+ ${MODELS.length>1?`<select id="msel">${MODELS.map((x,k)=>`<option value="${k}">${esc(x.name)}</option>`).join('')}</select>`:''}
+ <h4>ขั้นตอนทำตามทีละข้อ</h4><ol>
+ <li><b>หมุนดู:</b> ลากนิ้วบนโมเดลให้เห็นทุกด้าน และลองซูมเข้าซูมออก</li>
+ <li><b>ตรวจรอบตัว:</b> มองรอบตัวก่อน ยืนในที่โล่ง และขออนุญาตครู (กฎความปลอดภัยหน่วยที่ 3)</li>
+ <li><b>เปิด AR:</b> ถ้ามีปุ่ม "ดูในห้องของฉัน (AR)" ให้กด อนุญาตให้ใช้กล้อง แล้วเล็งพื้นที่โล่งและมีแสงพอ</li>
+ <li><b>ถ่ายภาพหน้าจอ:</b> วิธีถ่ายต่างกันตามรุ่นของเครื่อง ให้ถามครูหรือผู้ใหญ่ ถ้าเปิด AR ไม่ได้ ให้ถ่ายภาพหน้าจอตอนหมุนโมเดลแทน</li>
+ <li><b>ส่งงาน:</b> แนบไฟล์ภาพ (png, jpg) วิดีโอสั้น (mp4) หรือ pdf ไม่เกิน 20 MB ในกล่องด้านล่าง และเขียนหมายเหตุ 1 ประโยคว่าเห็นอะไร</li></ol>
+ ${T()?`<details><summary>สำหรับครู: โค้ดตัวอย่าง model-viewer</summary><pre><code>${esc(SNIP)}</code></pre></details>`:`<h4>📤 ส่งงานปฏิบัติ</h4><select id="sk"><option value="file">แนบไฟล์ภาพหรือวิดีโอ</option><option value="link">แนบลิงก์ (https)</option></select>
+ <input id="su" placeholder="https://..." style="display:none"><input id="sf" type="file" accept=".png,.jpg,.jpeg,.pdf,.mp4">
+ <textarea id="sn" placeholder="หมายเหตุ เช่น เห็นนักบินยืนอยู่ข้างโต๊ะ" rows="2"></textarea><button class="p" id="ss">ส่งงาน</button> <span id="sm" class="mut"></span><div id="mysubs"></div>`}`}
+function wirePractice(box){const sel=$('#msel');if(sel)sel.onchange=()=>{const m=MODELS[+sel.value];if(m&&isHttps(m.src)){$('#mv').setAttribute('src',m.src);$('#mv').setAttribute('alt',m.alt)}};
+ if(T())return;const k=$('#sk');k.onchange=()=>{$('#su').style.display=k.value==='link'?'':'none';$('#sf').style.display=k.value==='file'?'':'none'};
+ $('#ss').onclick=sendWork;loadMySubs()}
+const subRow=r=>`<tr><td>${fmt(r.created_at)}</td><td>${r.kind==='file'?fileBtn('submissions',r.storage_path,'เปิดไฟล์'):linkA(r.url)}</td><td>${r.score??'รอตรวจ'}</td><td>${esc(r.teacher_comment)}</td></tr>`;
+async function loadMySubs(){const{data}=await sb.from('submissions').select('*').eq('user_id',me.uid).eq('unit',4).order('created_at',{ascending:false});const el=$('#mysubs');if(!el)return;
+ el.innerHTML=(data||[]).length?`<h4>งานที่ส่งแล้ว</h4><div class="scroll"><table><tr><th>เมื่อ</th><th>งาน</th><th>คะแนน (เต็ม 10)</th><th>ความเห็นครู</th></tr>${data.map(subRow).join('')}</table></div>`:'';wireOpen()}
+async function sendWork(){const m=$('#sm'),kind=$('#sk').value,note=$('#sn').value.trim(),btn=$('#ss');m.textContent='';
+ const row={user_id:me.uid,unit:4,kind,note:note||null};
+ if(kind==='link'){const u=$('#su').value.trim();if(!isHttps(u)){m.textContent='ใส่ลิงก์ที่ขึ้นต้นด้วย https://';return}row.url=u}
+ else{const f=$('#sf').files[0],ext=extOf(f,['png','jpg','jpeg','pdf','mp4']);
+  if(!ext){m.textContent='เลือกไฟล์ png, jpg, pdf หรือ mp4';return}if(f.size>20*1048576){m.textContent='ไฟล์ใหญ่เกิน 20 MB';return}
+  const p=`${me.uid}/${rid()}.${ext}`;btn.disabled=true;m.textContent='กำลังอัปโหลด...';
+  const up=await sb.storage.from('submissions').upload(p,f,{contentType:MIME[ext]});if(up.error){btn.disabled=false;m.textContent=errTh(up.error,'อัปโหลดไม่สำเร็จ ตรวจชนิดและขนาดไฟล์แล้วลองใหม่');return}row.storage_path=p}
+ const r=await sb.from('submissions').insert(row);btn.disabled=false;if(r.error){m.textContent=errTh(r.error,'บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง');return}
+ m.textContent='ส่งงานแล้ว ✓';toast('📤 ส่งงานเรียบร้อย');$('#sn').value='';loadMySubs()}
+
+/* ============ แบบทดสอบ ============ */
+async function sTest(){const pre=ST.att.pre,post=ST.att.post,all5=ST.done.size>=5;
+ const card=(k,l,a,lock)=>`<div class="card"><h3>${l}</h3>${a?`<p class="ok">ทำแล้ว: ได้ <b>${a.score}/10</b> (${fmt(a.created_at)})</p>`+(k==='post'?`<button data-r="1">ดูเฉลยและคำอธิบาย</button>`:'<p class="mut">แบบทดสอบก่อนเรียนไม่แสดงเฉลย</p>'):(lock?`<p class="mut">🔒 ${lock}</p>`:`<button class="p" data-t="${k}">เริ่มทำ (10 ข้อ)</button>`)}<div id="T${k}"></div></div>`;
+ main(`<p class="mut">แบบทดสอบมี 10 ข้อ ทำได้ครั้งเดียวต่อชุด ส่งแล้วแก้ไม่ได้ ถ้าไม่แน่ใจ ให้ตอบเท่าที่คิดได้ ไม่เป็นไร</p>`
+  +card('pre','📝 แบบทดสอบก่อนเรียน',pre,'')+card('post','🏁 แบบทดสอบหลังเรียน',post,!pre?'ทำแบบทดสอบก่อนเรียนก่อน':!all5?`เรียนให้ครบ 5 หน่วยก่อน (ตอนนี้เรียนแล้ว ${ST.done.size} หน่วย)`:''));
+ $$('[data-t]').forEach(b=>b.onclick=async()=>{const k=b.dataset.t,box=$('#T'+k);b.disabled=true;
+  const f=await sb.rpc('test_form',{p_kind:k});if(f.error||!TEST[f.data]){b.disabled=false;box.innerHTML=`<p class="bad">${esc(errTh(f.error,'เริ่มทำข้อสอบไม่ได้ ลองใหม่อีกครั้ง'))}</p>`;return}
+  b.style.display='none';runTest(k,TEST[f.data],box)});
+ const rv=$('[data-r]');if(rv)rv.onclick=()=>showReview(rv)}
+function runTest(kind,items,box){let idx=0;const ans=Array(items.length).fill(-1);
+ const draw=()=>{const q=items[idx],last=idx===items.length-1;
+  box.innerHTML=`<div class="bar"><i style="width:${(idx+1)/items.length*100}%"></i></div><p class="mut">ข้อ ${idx+1} จาก ${items.length}</p><h4 style="margin-top:4px">${esc(q.q)}</h4>`
+  +q.o.map((o,j)=>`<label class="qopt ${ans[idx]===j?'sel':''}"><input type="radio" name="tq" value="${j}" ${ans[idx]===j?'checked':''}><span class="lt">${'กขคง'[j]}</span><span>${esc(o)}</span></label>`).join('')
+  +`<div class="row"><button id="tp" ${idx?'':'disabled'}>◀ ก่อนหน้า</button>${last?'<button class="p" id="tsub">ส่งคำตอบ</button>':'<button class="p" id="tn">ถัดไป ▶</button>'}</div><p id="tm" class="bad"></p>`;
+  box.querySelectorAll('input[name=tq]').forEach(r=>r.onchange=()=>{ans[idx]=+r.value;box.querySelectorAll('.qopt').forEach(l=>l.classList.remove('sel'));r.closest('.qopt').classList.add('sel')});
+  $('#tp').onclick=()=>{if(idx>0){idx--;draw()}};
+  const tn=$('#tn');if(tn)tn.onclick=()=>{if(ans[idx]<0){$('#tm').textContent='เลือกคำตอบก่อน';return}idx++;draw()};
+  const ts=$('#tsub');if(ts)ts.onclick=async()=>{const un=ans.indexOf(-1);if(un>=0){idx=un;draw();$('#tm').textContent='ยังไม่ได้ตอบข้อนี้ ตอบให้ครบทุกข้อก่อนส่ง';return}
+   if(!confirm('ส่งแล้วแก้ไขไม่ได้ ยืนยันหรือไม่?'))return;ts.disabled=true;
+   const r=await sb.rpc('submit_attempt',{p_kind:kind,p_answers:ans});if(r.error){ts.disabled=false;$('#tm').textContent=errTh(r.error,'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');return}
+   toast(`ส่งแล้ว ได้ ${r.data}/10 คะแนน`);sTest()}};
+ draw()}
+async function showReview(btn){btn.disabled=true;const r=await sb.rpc('post_review');const box=$('#Tpost');
+ if(r.error){btn.disabled=false;box.innerHTML=`<p class="bad">${esc(errTh(r.error,'โหลดเฉลยไม่สำเร็จ'))}</p>`;return}
+ const a=ST.att.post,items=TEST[a.form]||[],mine=a.answers||[];
+ box.innerHTML=(r.data||[]).map(k=>{const q=items[k.q-1];if(!q)return'';const ok=mine[k.q-1]===k.ans;
+  return `<div class="card soft"><b>${k.q}. ${esc(q.q)}</b> ${ok?'<span class="ok">✓ ถูก</span>':'<span class="bad">✗ ยังไม่ถูก</span>'}${q.o.map((o,j)=>`<div class="qopt ${j===k.ans?'right':j===mine[k.q-1]?'wrong':''}"><span class="lt">${'กขคง'[j]}</span><span>${esc(o)}${j===k.ans?' ✓':''}${j===mine[k.q-1]&&j!==k.ans?' (ที่เลือก)':''}</span></div>`).join('')}<div class="fb ok">💡 ${esc(k.why)}</div></div>`}).join('')}
+
+/* ============ สรุปผล (ผู้เรียน) ============ */
+async function sSummary(){const pre=ST.att.pre,post=ST.att.post,a=pre?pre.score:null,b=post?post.score:null;
+ const s=await sb.from('submissions').select('*').eq('user_id',me.uid).order('created_at',{ascending:false});if(s.error)throw s.error;const g=gain(a,b);
+ main(`<div class="grid3"><div class="kpi">ก่อนเรียน<div class="big">${a??'-'}<small>/10</small></div></div><div class="kpi">หลังเรียน<div class="big">${b??'-'}<small>/10</small></div></div><div class="kpi">เรียนแล้ว<div class="big">${ST.done.size}<small>/5 หน่วย</small></div></div></div>
+ ${a!=null&&b!=null?`<div class="card"><b>คะแนนเปลี่ยนไปอย่างไร</b><div class="bars"><div style="height:${a*10}%"><span>${a}</span></div><div class="b2" style="height:${b*10}%"><span>${b}</span></div></div><div class="row mut"><span style="flex:1;text-align:center">ก่อนเรียน</span><span style="flex:1;text-align:center">หลังเรียน</span></div>
+ <p><b>ค่าพัฒนาการ (normalized gain)</b> = (หลัง − ก่อน) ÷ (10 − ก่อน) = <b>${gainTxt(a,b)}</b></p>
+ <p class="mut">หมายเหตุ: เกณฑ์ตีความของ Hake (1998) คือ g ≥ 0.7 สูง, 0.3 ถึง 0.69 ปานกลาง, ต่ำกว่า 0.3 ต่ำ เกณฑ์นี้ใช้กับค่าเฉลี่ยของทั้งกลุ่ม ค่าของนักเรียนรายคนใช้ดูพัฒนาการของตนเองเท่านั้น ไม่ใช้ตัดสินผล</p></div>`
+ :'<div class="card soft">ทำแบบทดสอบก่อนเรียนและหลังเรียนให้ครบ จึงจะเห็นค่าพัฒนาการของตนเอง</div>'}
+ <div class="card"><b>งานที่ส่งและคะแนน</b>${(s.data||[]).length?`<div class="scroll"><table><tr><th>เมื่อ</th><th>งาน</th><th>คะแนน (เต็ม 10)</th><th>ความเห็นครู</th></tr>${s.data.map(subRow).join('')}</table></div>`:'<p class="mut">ยังไม่ได้ส่งงาน ส่งงานได้ในหน่วยที่ 4</p>'}</div>`)}
+
+/* ============ โปรไฟล์ ============ */
+function resizeImg(file,max=512){return new Promise((res,rej)=>{const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{const sc=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(b=>b?res(b):rej(new Error('resize')),'image/jpeg',0.85)};
+ img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('resize'))};img.src=url})}
+async function sProfile(){const st=me.st;let u='';if(st.photo_path){const{data}=await sb.storage.from('photos').createSignedUrl(st.photo_path,300);u=data?.signedUrl||''}
+ main(`<div class="card"><div class="row">${u?`<img class="av" src="${esc(u)}" alt="รูปโปรไฟล์">`:'<div class="av"></div>'}<div><b>${esc(me.name)}</b><br><span class="mut">เลขประจำตัว ${esc(st.id)} | ห้อง ${esc(st.section)}</span></div></div>
+ <p>เปลี่ยนรูปโปรไฟล์ (png หรือ jpg) ระบบจะย่อรูปให้ก่อนส่ง<br><span class="mut">แนะนำให้ใช้ภาพวาดหรือภาพการ์ตูนแทนภาพใบหน้า</span></p><input id="af" type="file" accept=".png,.jpg,.jpeg"><button class="p" id="au">อัปโหลด</button> <span id="am" class="bad"></span></div>`);
+ $('#au').onclick=async()=>{const f=$('#af').files[0],ext=extOf(f,['png','jpg','jpeg']),m=$('#am'),btn=$('#au');if(!ext){m.textContent='เลือกไฟล์ png หรือ jpg';return}if(f.size>15*1048576){m.textContent='ไฟล์ใหญ่เกินไป';return}
+  btn.disabled=true;m.textContent='';let blob;try{blob=await resizeImg(f)}catch(e){btn.disabled=false;m.textContent='อ่านรูปนี้ไม่ได้ ลองรูปอื่น';return}
+  const p=`${me.uid}/${rid()}.jpg`;const up=await sb.storage.from('photos').upload(p,blob,{contentType:'image/jpeg'});if(up.error){btn.disabled=false;m.textContent=errTh(up.error,'อัปโหลดไม่สำเร็จ ลองใหม่อีกครั้ง');return}
+  const r=await sb.from('students').update({photo_path:p}).eq('user_id',me.uid);if(r.error){btn.disabled=false;m.textContent=errTh(r.error,'บันทึกรูปไม่สำเร็จ');return}
+  if(st.photo_path)await sb.storage.from('photos').remove([st.photo_path]);st.photo_path=p;toast('🙂 เปลี่ยนรูปแล้ว');sProfile()}}
+
+/* ============ สื่อการเรียน ============ */
+async function vMats(){const{data:ms,error}=await sb.from('materials').select('*').order('created_at',{ascending:false});if(error)throw error;
+ const kl={file:'ไฟล์',link:'ลิงก์',video:'วิดีโอ'};
+ main(`${T()?`<div class="card"><b>เพิ่มสื่อ</b><input id="mt" placeholder="ชื่อสื่อ"><select id="mk"><option value="file">ไฟล์ (pptx, docx, pdf ไม่เกิน 50 MB)</option><option value="link">ลิงก์</option><option value="video">ลิงก์วิดีโอ</option></select>
+  <input id="mu" placeholder="https://..." style="display:none"><input id="mf" type="file" accept=".pptx,.docx,.pdf"><button class="p" id="mb">เพิ่ม</button> <span id="mmsg" class="bad"></span></div>`:'<p class="mut">สื่อเพิ่มเติมที่ครูเตรียมไว้ให้</p>'}
+  <div class="card scroll"><table><tr><th>ชื่อ</th><th>ชนิด</th><th>เปิด</th><th>เมื่อ</th>${T()?'<th></th>':''}</tr>${(ms||[]).map(m=>`<tr><td>${esc(m.title)}</td><td>${kl[m.kind]||''}</td><td>${m.storage_path?fileBtn('materials',m.storage_path,m.file_name||'เปิดไฟล์'):linkA(m.url)}</td><td>${fmt(m.created_at)}</td>${T()?`<td><button data-del="${esc(m.id)}" data-p="${esc(m.storage_path||'')}">ลบ</button></td>`:''}</tr>`).join('')||'<tr><td colspan="5">ยังไม่มีสื่อ</td></tr>'}</table></div>`);
+ if(!T())return;
+ const k=$('#mk');k.onchange=()=>{$('#mu').style.display=k.value==='file'?'none':'';$('#mf').style.display=k.value==='file'?'':'none'};
+ $('#mb').onclick=async()=>{const t=$('#mt').value.trim(),kind=k.value,m=$('#mmsg');if(!t){m.textContent='ใส่ชื่อสื่อ';return}const row={title:t,kind};
+  if(kind==='file'){const f=$('#mf').files[0],ext=extOf(f,['pptx','docx','pdf']);if(!ext){m.textContent='เลือกไฟล์ pptx, docx หรือ pdf';return}if(f.size>50*1048576){m.textContent='ไฟล์ใหญ่เกิน 50 MB';return}
+   const p=`${rid()}.${ext}`;const up=await sb.storage.from('materials').upload(p,f,{contentType:MIME[ext]});if(up.error){m.textContent=errTh(up.error,'อัปโหลดไม่สำเร็จ');return}row.storage_path=p;row.file_name=f.name}
+  else{const u=$('#mu').value.trim();if(!isHttps(u)){m.textContent='ลิงก์ต้องขึ้นต้นด้วย https://';return}row.url=u}
+  const r=await sb.from('materials').insert(row);r.error?m.textContent=errTh(r.error,'บันทึกไม่สำเร็จ'):vMats()};
+ $$('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('ลบสื่อนี้?'))return;if(b.dataset.p)await sb.storage.from('materials').remove([b.dataset.p]);const r=await sb.from('materials').delete().eq('id',b.dataset.del);if(r.error)alert(errTh(r.error,'ลบไม่สำเร็จ'));vMats()})}
+
+/* ============ ผู้สอน: ตรวจงาน ============ */
+async function tWork(){const[{data:ss,error},{data:st}]=await Promise.all([sb.from('submissions').select('*').order('created_at',{ascending:false}),sb.from('students').select('id,title,first_name,last_name,user_id')]);if(error)throw error;
+ const by=Object.fromEntries((st||[]).map(s=>[s.user_id,s]));
+ main(`<div class="card scroll"><table><tr><th>เลขประจำตัว</th><th>ชื่อ</th><th>หน่วย</th><th>งาน</th><th>หมายเหตุ</th><th>คะแนน (0-10)</th><th>ความเห็น</th><th></th></tr>${(ss||[]).map(r=>{const s=by[r.user_id]||{};return `<tr><td>${esc(s.id)}</td><td>${esc((s.title||'')+(s.first_name||'')+' '+(s.last_name||''))}</td><td>${r.unit}</td><td>${r.kind==='file'?fileBtn('submissions',r.storage_path,'เปิดไฟล์'):linkA(r.url)}</td><td>${esc(r.note)}</td>
+  <td><input id="sc${esc(r.id)}" type="number" min="0" max="10" step="0.5" value="${esc(r.score??'')}" style="width:84px"></td><td><input id="cm${esc(r.id)}" value="${esc(r.teacher_comment)}"></td><td><button data-g="${esc(r.id)}">บันทึก</button></td></tr>`}).join('')||'<tr><td colspan="8">ยังไม่มีงานส่ง</td></tr>'}</table></div>`);
+ $$('[data-g]').forEach(b=>b.onclick=async()=>{const id=b.dataset.g,v=$('#sc'+id).value;if(v!==''&&(+v<0||+v>10)){alert('คะแนนต้องอยู่ระหว่าง 0 ถึง 10');return}
+  const r=await sb.from('submissions').update({score:v===''?null:+v,teacher_comment:$('#cm'+id).value||null}).eq('id',id).select();
+  if(r.error){b.textContent='ผิดพลาด';console.error(r.error)}else b.textContent=(r.data||[]).length?'บันทึกแล้ว ✓':'ไม่มีสิทธิ์'})}
+
+/* ============ ผู้สอน: สรุปผล + CSV ============ */
+async function tResults(){const{data,error}=await sb.from('results').select('*').order('student_id');if(error)throw error;const rs=data||[];
+ const paths=rs.filter(r=>r.photo_path).map(r=>r.photo_path);let urls={};
+ if(paths.length){const{data:u}=await sb.storage.from('photos').createSignedUrls(paths,300);(u||[]).forEach(x=>{if(x&&x.signedUrl)urls[x.path]=x.signedUrl})}
+ const head=['เลขประจำตัว','คำนำหน้า','ชื่อ','สกุล','ห้อง','สมัครแล้ว','หน่วยที่เรียนแล้ว (5)','ก่อนเรียน (10)','หลังเรียน (10)','Normalized gain','จำนวนงานที่ส่ง','คะแนนงานสูงสุด'];
+ const rows=rs.map(r=>[r.student_id,r.title,r.first_name,r.last_name,r.section,r.registered?'ใช่':'ยัง',r.units_done,r.pre_score,r.post_score,r.norm_gain,r.submissions,r.best_work_score].map(v=>v??''));
+ const both=rs.filter(r=>r.pre_score!=null&&r.post_score!=null),n=both.length,mp=n?both.reduce((a,r)=>a+r.pre_score,0)/n:null,mq=n?both.reduce((a,r)=>a+r.post_score,0)/n:null;
+ const gg=n&&mp<10?Math.round((mq-mp)/(10-mp)*100)/100:null;
+ main(`<div class="grid3"><div class="kpi">สมัครแล้ว<div class="big">${rs.filter(r=>r.registered).length}<small>/${rs.length}</small></div></div><div class="kpi">ทำก่อนเรียนแล้ว<div class="big">${rs.filter(r=>r.pre_score!=null).length}</div></div><div class="kpi">ทำหลังเรียนแล้ว<div class="big">${rs.filter(r=>r.post_score!=null).length}</div></div></div>
+ <div class="card"><b>ค่าของกลุ่ม</b> (เฉพาะผู้ที่ทำครบทั้งก่อนและหลัง ${n} คน)<br>${n?`ค่าเฉลี่ยก่อน ${mp.toFixed(2)} | หลัง ${mq.toFixed(2)} | normalized gain ของกลุ่ม = ${gg==null?'คำนวณไม่ได้':gg.toFixed(2)+' (ระดับ'+gainLv(gg)+' ตามเกณฑ์ Hake, 1998)'}`:'ยังไม่มีข้อมูล'}
+ <p class="mut">เกณฑ์ของ Hake ใช้กับค่าเฉลี่ยกลุ่ม ค่ารายคนในตารางใช้ดูพัฒนาการเท่านั้น</p></div>
+ <div class="card"><button class="p" id="csv">ส่งออก CSV</button> <span class="mut">ไฟล์ CSV มีคอลัมน์เหมือนตาราง (ไม่รวมรูป) และใส่ BOM ให้ Excel อ่านภาษาไทยได้</span></div>
+ <div class="card scroll"><table><tr><th>รูป</th>${head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${rs.map((r,i)=>`<tr><td>${urls[r.photo_path]?`<img class="av s" loading="lazy" src="${esc(urls[r.photo_path])}" alt="">`:''}</td>${rows[i].map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`);
+ $('#csv').onclick=()=>{const q=c=>{let s=String(c);if(typeof c==='string')s=s.replace(/^([=+\-@])/,"'$1");return '"'+s.replace(/"/g,'""')+'"'};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+[head,...rows].map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));a.download='results_'+new Date().toISOString().slice(0,10)+'.csv';a.click()}}
+
+/* ============ ผู้สอน: ข้อสอบและเฉลย ============ */
+async function tKeys(){const{data,error}=await sb.rpc('teacher_keys');if(error)throw error;
+ const ot=Object.fromEntries(UNITS.flatMap((u,i)=>u.obj.map(([id,t])=>[id,`หน่วย ${i+1} (${id}): ${t}`])));
+ main(`<p class="mut">ชุด A และ B เป็นข้อสอบคู่ขนาน เลขท้ายเลขประจำตัวคู่ = ก่อนเรียนชุด A หลังเรียนชุด B | เลขคี่ = ก่อนเรียนชุด B หลังเรียนชุด A (นักเรียนไม่เห็นเฉลยของแบบก่อนเรียน)</p>`+['A','B'].map(f=>{const ks=(data||[]).filter(k=>k.form===f);
+  return `<div class="card scroll"><h3>ชุด ${f}</h3><table><tr><th>ข้อ</th><th>คำถามและตัวเลือก</th><th>จุดประสงค์</th><th>เหตุผลเฉลย</th></tr>${TEST[f].map((q,i)=>{const k=ks.find(x=>x.q===i+1);
+  return `<tr><td>${i+1}</td><td>${esc(q.q)}${q.o.map((o,j)=>`<div class="${k&&k.ans===j?'ok':''}">${'กขคง'[j]}. ${esc(o)}${k&&k.ans===j?' ✓':''}</div>`).join('')}</td><td>${esc(ot[q.u]||q.u)}</td><td>${k?esc(k.why):'-'}</td></tr>`}).join('')}</table></div>`}).join(''))}
+
+/* ============ เริ่มระบบ ============ */
+if(!CONFIGURED)setupUI();
+else if(!sb)app.innerHTML='<main><div class="card"><h3>โหลดไลบรารีไม่สำเร็จ</h3><p>ตรวจสอบอินเทอร์เน็ต แล้วรีเฟรชหน้านี้อีกครั้ง</p></div></main>';
+else boot();
+</script>
+</body>
+</html>
